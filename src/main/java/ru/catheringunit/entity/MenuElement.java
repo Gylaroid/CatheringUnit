@@ -4,8 +4,9 @@ import java.util.Objects;
 
 public class MenuElement {
     private long id;
-    private long foodOrDrinkId;
+    private long recipeId;
     private long menuId;
+    private int count;
 
     public MenuElement() {
     }
@@ -18,12 +19,12 @@ public class MenuElement {
         this.id = id;
     }
 
-    public long getFoodOrDrinkId() {
-        return foodOrDrinkId;
+    public long getRecipeId() {
+        return recipeId;
     }
 
-    public void setFoodOrDrinkId(long foodOrDrinkId) {
-        this.foodOrDrinkId = foodOrDrinkId;
+    public void setRecipeId(long recipeId) {
+        this.recipeId = recipeId;
     }
 
     public long getMenuId() {
@@ -34,25 +35,34 @@ public class MenuElement {
         this.menuId = menuId;
     }
 
+    public int getCount() {
+        return count;
+    }
+
+    public void setCount(int count) {
+        this.count = count;
+    }
+
+    @Override
+    public String toString() {
+        return "MenuElement{" +
+                "id=" + id +
+                ", foodOrDrinkId=" + recipeId +
+                ", menuId=" + menuId +
+                ", count=" + count +
+                '}';
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         MenuElement that = (MenuElement) o;
-        return id == that.id && foodOrDrinkId == that.foodOrDrinkId && menuId == that.menuId;
+        return id == that.id && recipeId == that.recipeId && menuId == that.menuId && count == that.count;
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, foodOrDrinkId, menuId);
-    }
-
-    @Override
-    public String toString() {
-        return "MenuComposition{" +
-                "id=" + id +
-                ", foodOrDrinkId=" + foodOrDrinkId +
-                ", menuId=" + menuId +
-                '}';
+        return Objects.hash(id, recipeId, menuId, count);
     }
 }

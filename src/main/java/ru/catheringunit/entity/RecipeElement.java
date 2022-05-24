@@ -1,5 +1,7 @@
 package ru.catheringunit.entity;
 
+import org.springframework.stereotype.Component;
+
 import java.util.Objects;
 
 public class RecipeElement {
@@ -7,6 +9,7 @@ public class RecipeElement {
     private long foodOrDrinkId;
     private long ingredientId;
     private int weight;
+    private float price;
 
     public RecipeElement() {    }
 

@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="ru" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Рецепты</title>
+</head>
+<body>
+    <a th:href="@{/ingredients}" th:text="Ингредиенты" />
+    <a th:href="@{/categories}" th:text="Категории" />
+    <a th:href="@{/recipes}" th:text="Рецепты" />
+    <a th:href="@{/menus}" th:text="Меню" />
+    <a th:href="@{/proposals}" th:text="Заявки" />
+    <br>
+    <a th:href="@{/recipes/new}"><button type="button">Добавить рецепт</button></a>
+    <div th:each="recipe: ${recipes}">
+        <form th:method="DELETE" th:action="@{/recipes/{id}(id=${recipe.getId()})}">
+            <input type="submit" value="X">
+            <a th:href="@{/recipes/{id}(id=${recipe.getId()})}" th:text="${recipe.getName()}" />
+        </form>
+    </div>
+</body>
+</html>

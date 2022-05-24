@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html lang="ru" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title th:title="'Ингредиент: ' + ${ingredient.getName()}"></title>
+</head>
+<body>
+<table style="border: 1px solid gray">
+    <tr><th>ID</th><th>Наименование</th><th>Стоимость</th></tr>
+    <tr><td th:text="${ingredient.getId()}"></td><td th:text="${ingredient.getName()}"></td><td th:text="${ingredient.getPrice()} + ' руб.'"></td></tr>
+</table>
+<a th:href="@{/ingredients/{id}/edit(id=${ingredient.getId()})}"><button type="button">Изменить</button></a>
+<form th:method="DELETE" th:action="@{/ingredients/{id}(id=${ingredient.getId()})}"><input type="submit" value="Удалить"/></form>
+<a th:href="@{/ingredients}"><button type="button">Список игредиентов</button></a>
+</body>
+</html>

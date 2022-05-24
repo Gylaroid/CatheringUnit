@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html lang="ru" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Рецепт</title>
+</head>
+<body>
+    <form th:method="POST" th:action="@{/recipes}" th:object="${recipe}">
+        <label for="name">Наименование: </label>
+        <input th:type="text" id="name" th:field="*{name}"/><br>
+        <label for="category">Категория: </label>
+        <select id="category" th:field="*{categoryId}">
+            <option th:each="category: ${categories}" th:text="${category.getName()}" th:value="${category.getId()}"></option>
+        </select>
+        <input type="submit" value="Создать">
+    </form>
+</body>
+</html>

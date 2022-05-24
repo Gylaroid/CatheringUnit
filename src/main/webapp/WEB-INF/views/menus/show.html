@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="ru" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Меню: </title>
+</head>
+<body>
+<span th:text="'Меню: ' + ${menu.getName()}"></span>
+<a th:href="@{/menus}"><button>К списку меню</button></a>
+<a th:href="@{/menus/{menuId}/edit(menuId=${menu.getId()})}"><button>Изменить меню</button></a>
+<table>
+    <tr><th>№</th><th>Название</th><th>Стоимость</th><th>Количество</th></tr>
+    <tr th:each="recipe, iState: ${addedRecipes}">
+        <td th:text="${iState.count}"></td>
+        <td><a target = "_blank" th:href="@{/recipes/{recipeId}(recipeId=${recipe.getId()})}" th:text="${recipe.getName()}"></a></td>
+        <td th:text="${addedPrices.get(iState.count - 1)}"></td>
+        <td th:text="${menuElements.get(iState.count - 1).getCount()}"></td>
+    </tr>
+    <tr><td></td><td></td><td th:text="${sum}"></td></tr>
+</table>
+</body>
+</html>

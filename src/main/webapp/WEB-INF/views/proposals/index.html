@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="ru" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Заявки</title>
+</head>
+<body>
+    <a th:href="@{/ingredients}" th:text="Ингредиенты" />
+    <a th:href="@{/categories}" th:text="Категории" />
+    <a th:href="@{/recipes}" th:text="Рецепты" />
+    <a th:href="@{/menus}" th:text="Меню" />
+    <a th:href="@{/proposals}" th:text="Заявки" />
+    <br>
+
+    <form method="POST" th:action="@{/proposals}" th:object="${newProposal}">
+        <label for="name">Дата: </label>
+        <input id="name" type="date" th:field="*{date}">
+        <input type="submit" value="Создать">
+    </form>
+
+    <table>
+        <tr><th></th><th></th><th>ID</th><th>Название</th></tr>
+        <tr th:each="proposal: ${proposals}">
+
+            <td>
+                <form th:method="DELETE" th:action="@{/proposals/{proposalId}(proposalId=${proposal.getId()})}">
+                    <button type="submit">X</button>
+                </form>
+            </td>
+            <td>
+                <a th:href="@{/proposals/{proposalId}/edit(proposalId=${proposal.getId()})}"><button type="button">Изменить</button></a>
+            </td>
+            <td><label th:text="${proposal.getId()}"></label></td>
+            <td><a th:href="@{/proposals/{proposalId}(proposalId=${proposal.getId()})}"><label th:text="${proposal.getDate()}"></label></a></td>
+        </tr>
+    </table>
+</body>
+</html>

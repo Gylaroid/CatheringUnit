@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="ru" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Редактирование ингредиента</title>
+</head>
+<body>
+    <form enctype="application/x-www-form-urlencoded" th:method="PATCH" th:action="@{/ingredients/{id}(id=${ingredient.getId()})}" th:object="${ingredient}">
+        <label for="name">Наименование: </label>
+        <input type="text" th:lang="ru" th:charset="UTF-8" th:field="*{name}" id="name">
+
+        <label for="price">Цена: </label>
+        <input type="text" th:field="*{price}" id="price">
+
+        <input type="submit" value="Изменить">
+    </form>
+
+    <a th:href="@{/ingredients}"><button type="button">Список игредиентов</button></a>
+</body>
+</html>

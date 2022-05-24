@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="ru" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Редактирование меню</title>
+</head>
+<body>
+<form th:method="PATCH" th:object="${menuE}" th:action="@{/menus/{menuId}(menuId=${menuE.getId()})}" >
+    <label for="name">Название меню:</label>
+    <input th:type="hidden" th:field="*{id}" />
+    <input th:type="text" id="name" th:field="*{name}" />
+    <input type="submit" value="Изменить">
+</form>
+<a th:href="@{/menus}"><button>Готово</button></a>
+<table>
+    <tr><th>№</th><th>Название</th><th>Стоимость</th><th>Количество</th><th></th></tr>
+    <tr th:each="recipe, iState: ${addedRecipes}">
+        <td th:text="${iState.count}"></td>
+        <td><a target = "_blank" th:href="@{/recipes/{recipeId}(recipeId=${recipe.getId()})}" th:text="${recipe.getName()}"></a></td>
+        <td th:text="${addedPrices.get(iState.count - 1)}"></td>
+        <td th:text="${menuElements.get(iState.count - 1).getCount()}"></td>
+        <td>
+            <form th:method="DELETE" th:object="${delElement}" th:action="@{/menus/{menuId}/{recipeId}(menuId=${menuE.getId()}, recipeId=${recipe.getId()})}">
+                <input type="hidden" name="count" th:value="${menuElements.get(iState.count - 1).getCount()}">
+                <input type="hidden" name="id" th:value="${menuElements.get(iState.count - 1).getId()}">
+                <input type="hidden" name="foodOrDrinkId" th:value="${menuElements.get(iState.count - 1).getRecipeId()}">
+                <input type="hidden" name="menuId" th:value="${menuElements.get(iState.count - 1).getMenuId()}">
+                <button type="submit">X</button>
+            </form>
+        </td>
+    </tr>
+    <tr><td></td><td></td><td th:text="${sum}"></td></tr>
+</table>
+<form th:object="${categoryE}" th:method="GET" th:action="@{/menus/{menuId}/edit(menuId=${menuE.getId()})}">
+    <label for="category">Категория: </label>
+    <select id="category" th:field="*{id}">
+        <option value="0">Все</option>
+        <option th:each="category: ${categories}" th:text="${category.getName()}" th:value="${category.getId()}"></option>
+    </select>
+    <input type="submit" value="Применить">
+</form>
+<table>
+    <tr><th>№</th><th>Название</th><th>Стоимость</th><th>Количество</th><th></th></tr>
+    <tr th:each="recipe, iState: ${recipes}">
+        <td th:text="${iState.count}"></td>
+        <td><a target = "_blank" th:href="@{/recipes/{recipeId}(recipeId=${recipe.getId()})}" th:text="${recipe.getName()}"></a></td>
+        <td th:text="${prices.get(iState.count - 1)}"></td>
+        <form th:method="POST" th:object="${menuElement}" th:action="@{/menus/{menuId}/{recipeId}(menuId=${menuE.getId()}, recipeId=${recipe.getId()})}">
+            <td><input size="2" min="1" type="number" th:field="*{count}"> порц.</td>
+            <td><button type="submit">+</button></td>
+        </form>
+    </tr>
+</table>
+</body>
+</html>

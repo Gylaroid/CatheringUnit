@@ -1,5 +1,7 @@
 package ru.catheringunit.entity;
 
+import org.springframework.stereotype.Component;
+
 public class FieldMeta {
     private String fieldName;
     private String fieldType;

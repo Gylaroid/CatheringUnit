@@ -11,7 +11,7 @@ import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
-public class DBWorker {
+public class DBConnector {
     private final String HOST = "";
     private final String USER = "";
     private final String PASSWORD = "";
@@ -19,10 +19,16 @@ public class DBWorker {
     private Connection connection;
 
 
-    public DBWorker(){    }
+    public DBConnector(){    }
 
 
     public Connection getConnection() {
+        try {
+            Class.forName("org.postgresql.Driver");
+        } catch (ClassNotFoundException e){
+            e.printStackTrace();
+        }
+
         try {
             connection = DriverManager.getConnection(HOST, USER, PASSWORD);
         } catch (SQLException e) {

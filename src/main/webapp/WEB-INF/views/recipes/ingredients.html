@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="ru" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title th:text="'Рецепт: ' + ${recipe.getName()}"></title>
+</head>
+<body>
+    <span th:text="${recipe.getName()}"></span>
+    <a th:href="@{/recipes/{id}/edit(id=${recipe.getId()})}"><button type="button">Изменить рецепт</button> </a>
+    <a th:href="@{/recipes}"><button type="button">К рецептам</button></a>
+<!--    <table>-->
+<!--        <tr><th>Наименование</th><th>Стоимость</th></tr>-->
+<!--        <tr th:each="ingredient: ${addedIngredients}">-->
+<!--            <td th:text="${ingredient.getName()}"></td>-->
+<!--            <td th:text="${ingredient.getPrice()}"></td>-->
+<!--        </tr>-->
+<!--        <tr><td></td><td th:text="${sumPrice}"></td></tr>-->
+<!--    </table>-->
+    <table>
+        <tr><th>№</th><th>Наименование</th><th>Количество</th><th>Стоимость</th></tr>
+        <tr th:each="ingredient, iState: ${addedIngredients}">
+            <td th:text="${iState.count}"></td>
+            <td th:text="${ingredient.getName()}"></td>
+            <!--            <td th:text="${ingredient.getPrice()}"></td>-->
+            <td th:text="${recipeElements.get(iState.count - 1).getWeight()}">weigth</td>
+            <td th:text="${prices.get(iState.count - 1)}">price</td>
+        </tr>
+        <tr><td></td><td></td><td></td><td th:text="${sumPrice}"></td></tr>
+    </table>
+</body>
+</html>

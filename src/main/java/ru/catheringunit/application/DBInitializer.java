@@ -13,11 +13,12 @@ public class DBInitializer {
     private final String initQuery;
     private final Statement statement;
 
-    DBInitializer(DBWorker db) throws SQLException {
+    public DBInitializer(DBConnector db) throws SQLException {
         StringBuilder builder = new StringBuilder();
         InputStream stream = getClass().getClassLoader().getResourceAsStream("sql/initQuery.sql");
-        BufferedReader bufferedReader = new BufferedReader (new InputStreamReader(stream));
-        String line;
+        if(stream != null){
+            BufferedReader bufferedReader = new BufferedReader (new InputStreamReader(stream));
+            String line;
             try {
                 while ((line = bufferedReader.readLine()) != null) {
                     builder.append(line);
@@ -25,8 +26,14 @@ public class DBInitializer {
             } catch (IOException e) {
                 e.printStackTrace();
             }
-        initQuery = builder.toString();
-        statement = db.getConnection().createStatement();
+            initQuery = builder.toString();
+            statement = db.getConnection().createStatement();
+        } else {
+            initQuery = "";
+            statement = null;
+            System.out.println("Проблема с доступом к файлу запроса инициализации БД");
+        }
+
     }
 
     public void initDB(){

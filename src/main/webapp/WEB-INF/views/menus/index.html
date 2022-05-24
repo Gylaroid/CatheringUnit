@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="ru" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Меню</title>
+</head>
+<body>
+    <a th:href="@{/ingredients}" th:text="Ингредиенты" />
+    <a th:href="@{/categories}" th:text="Категории" />
+    <a th:href="@{/recipes}" th:text="Рецепты" />
+    <a th:href="@{/menus}" th:text="Меню" />
+    <a th:href="@{/proposals}" th:text="Заявки" />
+    <br>
+
+    <form method="POST" th:action="@{/menus}" th:object="${menu}">
+        <label for="name">Название меню: </label>
+        <input id="name" th:field="*{name}">
+        <input type="submit" value="Создать">
+    </form>
+
+    <table>
+        <tr><th></th><th></th><th>ID</th><th>Название</th></tr>
+        <tr th:each="menuL: ${menus}">
+
+            <td>
+                <form th:method="DELETE" th:action="@{/menus/{menuId}(menuId=${menuL.getId()})}">
+                    <button type="submit">X</button>
+                </form>
+            </td>
+            <td>
+                <a th:href="@{/menus/{menuId}/edit(menuId=${menuL.getId()})}"><button type="button">Изменить</button></a>
+            </td>
+            <td><label th:text="${menuL.getId()}"></label></td>
+            <td><a th:href="@{/menus/{menuId}(menuId=${menuL.getId()})}"><label th:text="${menuL.getName()}"></label></a></td>
+        </tr>
+    </table>
+</body>
+</html>

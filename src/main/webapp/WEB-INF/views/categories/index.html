@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="ru" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Категории блюд</title>
+</head>
+<body>
+    <a th:href="@{/ingredients}" th:text="Ингредиенты" />
+    <a th:href="@{/categories}" th:text="Категории" />
+    <a th:href="@{/recipes}" th:text="Рецепты" />
+    <a th:href="@{/menus}" th:text="Меню" />
+    <a th:href="@{/proposals}" th:text="Заявки" />
+    <br>
+    <form method="POST" th:action="@{/categories}" th:object="${category}">
+        <label for="name">Название категории: </label>
+        <input id="name" th:field="*{name}">
+        <input type="submit" value="Создать">
+    </form>
+    <div th:each="category: ${categories}">
+        <form  th:method="DELETE" th:action="@{/categories/{id}(id=${category.getId()})}" th:object="${category}">
+            <input type="submit" value="X">
+            <label th:text="${category.getId()}"></label>
+            <label th:text="${category.getName()}"></label>
+        </form>
+    </div>
+</body>
+</html>
