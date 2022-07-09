@@ -10,8 +10,15 @@ import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
-import ru.catheringunit.dao.*;
-import ru.catheringunit.entity.*;
+import ru.catheringunit.application.PriceCalculator;
+import ru.catheringunit.dao.CategoryDAO;
+import ru.catheringunit.dao.MenuDAO;
+import ru.catheringunit.dao.MenuElementDAO;
+import ru.catheringunit.dao.RecipeDAO;
+import ru.catheringunit.entity.Category;
+import ru.catheringunit.entity.Menu;
+import ru.catheringunit.entity.MenuElement;
+import ru.catheringunit.entity.Recipe;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -21,35 +28,23 @@ import java.util.List;
 public class MenusController {
     private MenuElementDAO menuElementDAO;
     private MenuDAO menuDAO;
-    private RecipeElementDAO recipeElementDAO;
     private RecipeDAO recipeDAO;
     private CategoryDAO categoryDAO;
+    private PriceCalculator priceCalculator;
 
     public MenusController(){    }
 
     @Autowired
     public MenusController(MenuElementDAO menuElementDAO,
                            MenuDAO menuDAO,
-                           RecipeElementDAO recipeElementDAO,
                            RecipeDAO recipeDAO,
-                           CategoryDAO categoryDAO){
+                           CategoryDAO categoryDAO,
+                           PriceCalculator priceCalculator){
         this.menuElementDAO = menuElementDAO;
         this.menuDAO = menuDAO;
-        this.recipeElementDAO = recipeElementDAO;
         this.recipeDAO = recipeDAO;
         this.categoryDAO = categoryDAO;
-    }
-
-    private float recipePrice(long recipeId){
-        List<Ingredient> ingredients = recipeElementDAO.getIngredientsByRecipeId(recipeId);
-        List<RecipeElement> elements = recipeElementDAO.getById(recipeId);
-        float sum = 0;
-        List<Float> prices = new ArrayList();
-        for (int i = 0; i < ingredients.size(); i++){
-            prices.add(ingredients.get(i).getPrice() * elements.get(i).getWeight());
-            sum += prices.get(i);
-        }
-        return sum;
+        this.priceCalculator = priceCalculator;
     }
 
     private List<Recipe> recipeSorter(List<Recipe> recipes, Category category){
@@ -75,20 +70,19 @@ public class MenusController {
 
     @GetMapping("/{menuId}")
     public String show(@PathVariable("menuId") long menuId, Model model){
-        model.addAttribute("menu", menuDAO.getById(menuId));
+        Menu menu = menuDAO.getById(menuId);
+        model.addAttribute("menu", menu);
 
 //        Верхняя таблица
         List<MenuElement> menuElements = menuElementDAO.getById(menuId);
+        List<Float> addedPrices = priceCalculator.calculateRecipesPrices(menu);
+        float sum = priceCalculator.calculateSum(addedPrices);
         List<Recipe> addedRecipes = new ArrayList<>();
-        List<Float> addedPrices = new ArrayList<>();
-        float sum = 0;
-        for(int i = 0; i < menuElements.size(); i++){
-            Recipe recipe = recipeDAO.getById(menuElements.get(i).getRecipeId());
-            int count = menuElements.get(i).getCount();
-            addedRecipes.add(recipe);
-            addedPrices.add(recipePrice(recipe.getId()) * count);
-            sum += addedPrices.get(i);
+
+        for(MenuElement menuElement : menuElements){
+            addedRecipes.add(recipeDAO.getById(menuElement.getRecipeId()));
         }
+
         model.addAttribute("menuElements", menuElements);
         model.addAttribute("addedRecipes", addedRecipes);
         model.addAttribute("addedPrices", addedPrices);
@@ -115,7 +109,8 @@ public class MenusController {
                        @PathVariable("menuId") long id,
                        Model model){
 //        Форма изменения названия
-        model.addAttribute("menuE", menuDAO.getById(id));
+        Menu menu = menuDAO.getById(id);
+        model.addAttribute("menuE", menu);
 
 //        Категории
         model.addAttribute("categoryE", new Category());
@@ -124,16 +119,12 @@ public class MenusController {
 //        Верхняя таблица
         List<MenuElement> menuElements = menuElementDAO.getById(id);
         List<Recipe> addedRecipes = new ArrayList<>();
-        List<Float> addedPrices = new ArrayList<>();
-        float sum = 0;
-        for(int i = 0; i < menuElements.size(); i++){
-            Recipe recipe = recipeDAO.getById(menuElements.get(i).getRecipeId());
-
-            int count = menuElements.get(i).getCount();
-            addedRecipes.add(recipe);
-            addedPrices.add(recipePrice(recipe.getId()) * count);
-            sum += addedPrices.get(i);
+        List<Float> addedPrices = priceCalculator.calculateRecipesPrices(menu);
+        float sum = priceCalculator.calculateSum(addedPrices);
+        for(MenuElement element : menuElements){
+            addedRecipes.add(recipeDAO.getById(element.getRecipeId()));
         }
+
         model.addAttribute("menuElements", menuElements);
         model.addAttribute("addedRecipes", addedRecipes);
         model.addAttribute("addedPrices", addedPrices);
@@ -142,11 +133,8 @@ public class MenusController {
 
 //        Нижняя таблица
         List<Recipe> recipes = recipeSorter(recipeDAO.getAll(), category);
+        List<Float> prices = priceCalculator.calculateRecipesPrices(recipes);
 
-        List<Float> prices = new ArrayList<>();
-        for (int i = 0; i < recipes.size(); i++){
-            prices.add(recipePrice(recipes.get(i).getId()));
-        }
         model.addAttribute("recipes", recipes);
         model.addAttribute("prices", prices);
         model.addAttribute("menuElement", new MenuElement());
@@ -158,11 +146,6 @@ public class MenusController {
         menuDAO.update(menu);
         return "redirect:/menus/{menuId}/edit";
     }
-
-//    @GetMapping("/{menuId}/add")
-//    public String addRecipe(){
-//        return "menus/add";
-//    }
 
     @PostMapping("/{menuId}/{recipeId}")
     public String createRecipe(@ModelAttribute("menuElemt") MenuElement menuElement,

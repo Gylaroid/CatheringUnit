@@ -2,23 +2,92 @@
 <html lang="ru" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0-beta1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-0evHe/X+R7YkIZDRvuzKMRqM+OrBnVFBL6DOitfPri4tjfHxaWutUpFmBp4vmVor" crossorigin="anonymous">
     <title>Ингредиенты</title>
 </head>
 <body>
-    <a th:href="@{/ingredients}" th:text="Ингредиенты" />
-    <a th:href="@{/categories}" th:text="Категории" />
-    <a th:href="@{/recipes}" th:text="Рецепты" />
-    <a th:href="@{/menus}" th:text="Меню" />
-    <a th:href="@{/proposals}" th:text="Заявки" />
-    <br>
-    <a th:href="@{/ingredients/new}">
-        <button type="button">Добавить новый</button>
-    </a>
-    <div th:each="ingredient: ${ingredients}">
-        <form th:method="DELETE" th:action="@{/ingredients/{id}(id=${ingredient.getId()})}">
-            <input type="submit" value="X">
-            <a th:href="@{/ingredients/{id}(id=${ingredient.getId()})}" th:text="${ingredient.getName()} + ' ' + ${ingredient.getPrice()}+ ' руб.'" />
-        </form>
+<div class="sticky-top" style="padding-top: 20px; padding-bottom: 20px; background: white; box-shadow: 0 0 5px rgba(122,122,122,0.5);">
+    <ul class="nav nav-pills justify-content-center">
+        <li class="nav-item">
+            <a class="nav-link active" aria-current="page" th:href="@{/ingredients}" th:text="Ингредиенты">Link</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" th:href="@{/categories}" th:text="Категории" >Link</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" th:href="@{/recipes}" th:text="Рецепты">Link</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" th:href="@{/menus}" th:text="Меню">Link</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" th:href="@{/proposals}" th:text="Заявки">Link</a>
+        </li>
+    </ul>
+</div>
+<div class="container">
+    <div class="row justify-content-center">
+        <div class="col col-lg-8">
+            <form th:method="POST" th:action="@{/ingredients}" th:object="${ingredient}">
+                <div class="row">
+                    <div class="col-auto mt-3">
+                        <label class="col-form-label" for="name">Наименование: </label>
+                    </div>
+                    <div class="col-auto mt-3">
+                        <input class="form-control" type="text" th:lang="ru" th:charset="UTF-8" th:field="*{name}" id="name">
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-auto mt-3">
+                        <label class="col-form-label" for="price">Цена: </label>
+                    </div>
+                    <div class="col-auto mt-3 col-md-auto">
+                        <input class="form-control" type="number" step="0.001" size="2" th:field="*{price}" id="price">
+                    </div>
+                    <div class="col-4 mt-3 col-md-auto">
+                        <input class="btn btn-primary" type="submit" value="Создать">
+                    </div>
+                </div>
+
+
+            </form>
+        </div>
     </div>
+
+    <div class="row justify-content-center">
+        <div class="col col-lg-8">
+            <table class="table table-striped table-hover">
+                <thead>
+                <tr><th class="d-none d-sm-table-cell">№</th><th>Название</th><th>Стоимость</th><th></th><th></th></tr>
+                </thead>
+                <tbody>
+                <tr th:each="ingredient, iState: ${ingredients}">
+                    <td>
+                        <span th:text="${iState.count}">number</span>
+                    </td>
+                    <td>
+                        <span th:text="${ingredient.getName()}"></span>
+                    </td>
+                    <td>
+                        <span th:text="${ingredient.getPrice()}"></span>
+                    </td>
+                    <td>
+                        <a th:href="@{/ingredients/{id}/edit(id=${ingredient.getId()})}"><button class="btn btn-primary">✎</button></a>
+                    </td>
+                    <td>
+                        <form th:method="DELETE" th:action="@{/ingredients/{id}(id=${ingredient.getId()})}">
+                            <input class="btn btn-primary" type="submit" value=" x ">
+                        </form>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+</div>
 </body>
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.5/dist/umd/popper.min.js" integrity="sha384-Xe+8cL9oJa6tN/veChSP7q+mnSPaj5Bcu9mPX5F5xIGE0DVittaqT5lorf0EI7Vk" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0-beta1/dist/js/bootstrap.min.js" integrity="sha384-kjU+l4N0Yf4ZOJErLsIcvOU2qSb74wXpOhqTvwVx3OElZRweTnQ6d31fXEoRD1Jy" crossorigin="anonymous"></script>
 </html>

@@ -1,5 +1,6 @@
 package ru.catheringunit.dao;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import ru.catheringunit.application.DBConnector;
 import ru.catheringunit.entity.Ingredient;
@@ -10,8 +11,11 @@ import java.util.List;
 
 @Component
 public class IngredientDAO {
+    @Autowired
+    public DBConnector dbConnector;
+
     public boolean add(Ingredient entity) {
-        Connection connection = new DBConnector().getConnection();
+        Connection connection = dbConnector.getConnection();
         boolean status = false;
         ResultSet resultSet;
         PreparedStatement preparedStatement;
@@ -36,7 +40,7 @@ public class IngredientDAO {
     }
 
     public List<Ingredient> getAll() {
-        Connection connection = new DBConnector().getConnection();
+        Connection connection = dbConnector.getConnection();
 
         List<Ingredient> result = new ArrayList<>();
         ResultSet resultSet;
@@ -65,7 +69,7 @@ public class IngredientDAO {
     }
 
     public Ingredient getById(long id) {
-        Connection connection = new DBConnector().getConnection();
+        Connection connection = dbConnector.getConnection();
         Ingredient result = null;
         ResultSet resultSet;
         PreparedStatement preparedStatement;
@@ -92,7 +96,7 @@ public class IngredientDAO {
     }
 
     public boolean update(Ingredient entity) {
-        Connection connection = new DBConnector().getConnection();
+        Connection connection = dbConnector.getConnection();
         boolean status = false;
         PreparedStatement preparedStatement;
         String sql = "UPDATE public.ingredients SET name = ?, price = ? WHERE id = ?";
@@ -112,7 +116,7 @@ public class IngredientDAO {
     }
 
     public boolean remove(Ingredient entity) {
-        Connection connection = new DBConnector().getConnection();
+        Connection connection = dbConnector.getConnection();
         boolean status = false;
         PreparedStatement preparedStatement;
         String sql = "DELETE FROM public.ingredients WHERE id = ?";
@@ -130,7 +134,7 @@ public class IngredientDAO {
     }
 
     public boolean remove(int id) {
-        Connection connection = new DBConnector().getConnection();
+        Connection connection = dbConnector.getConnection();
         boolean status = false;
         PreparedStatement preparedStatement;
         String sql = "DELETE FROM public.ingredients WHERE id = ?";

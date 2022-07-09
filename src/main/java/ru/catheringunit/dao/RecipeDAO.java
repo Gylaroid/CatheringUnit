@@ -1,5 +1,6 @@
 package ru.catheringunit.dao;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import ru.catheringunit.application.DBConnector;
 import ru.catheringunit.entity.Recipe;
@@ -10,10 +11,12 @@ import java.util.List;
 
 @Component
 public class RecipeDAO {
+    @Autowired
+    public DBConnector dbConnector;
 
     public boolean add(Recipe entity) {
         boolean status = false;
-        Connection connection = new DBConnector().getConnection();
+        Connection connection = dbConnector.getConnection();
         PreparedStatement preparedStatement;
         ResultSet resultSet;
         String sql = "INSERT INTO public.\"food&drinks\" (category_id, name) VALUES (?, ?) RETURNING id;";
@@ -39,7 +42,7 @@ public class RecipeDAO {
     }
 
     public List<Recipe> getAll() {
-        Connection connection = new DBConnector().getConnection();
+        Connection connection = dbConnector.getConnection();
         List<Recipe> foodAndDrinks = new ArrayList<>();
         Statement statement;
         String sql = "SELECT * FROM public.\"food&drinks\";";
@@ -67,7 +70,7 @@ public class RecipeDAO {
     }
 
     public Recipe getById(long id) {
-        Connection connection = new DBConnector().getConnection();
+        Connection connection = dbConnector.getConnection();
         Recipe recipe = new Recipe();
         PreparedStatement preparedStatement;
         String sql = "SELECT * FROM public.\"food&drinks\" WHERE id = ?;";
@@ -95,7 +98,7 @@ public class RecipeDAO {
     }
 
     public boolean update(Recipe entity) {
-        Connection connection = new DBConnector().getConnection();
+        Connection connection = dbConnector.getConnection();
         boolean status = false;
         PreparedStatement preparedStatement;
         String sql = "UPDATE public.\"food&drinks\" SET name = ?, category_id = ? WHERE id = ?;";
@@ -115,7 +118,7 @@ public class RecipeDAO {
     }
 
     public boolean remove(Recipe entity) {
-        Connection connection = new DBConnector().getConnection();
+        Connection connection = dbConnector.getConnection();
         boolean status = false;
         PreparedStatement preparedStatement;
         String sql = "DELETE FROM public.\"food&drinks\" WHERE id = ? AND name = ? AND category_id = ?";

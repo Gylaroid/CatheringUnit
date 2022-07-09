@@ -17,19 +17,16 @@ public class ProposalsController {
     private final ProposalDAO proposalDAO;
     private final ProposalElementDAO proposalElementDAO;
     private final MenuDAO menuDAO;
-    private final RecipeElementDAO recipeElementDAO;
     private final PriceCalculator priceCalculator;
 
     @Autowired
     public ProposalsController(ProposalDAO proposalDAO,
                                ProposalElementDAO proposalElementDAO,
                                MenuDAO menuDAO,
-                               RecipeElementDAO recipeElementDAO,
                                PriceCalculator priceCalculator){
         this.proposalDAO = proposalDAO;
         this.proposalElementDAO = proposalElementDAO;
         this.menuDAO = menuDAO;
-        this.recipeElementDAO = recipeElementDAO;
         this.priceCalculator = priceCalculator;
     }
 
@@ -74,17 +71,6 @@ public class ProposalsController {
         Proposal proposal = proposalDAO.getById(proposalId);
         proposalDAO.remove(proposal);
         return "redirect:/proposals";
-    }
-    private float recipePrice(long recipeId){
-        List<Ingredient> ingredients = recipeElementDAO.getIngredientsByRecipeId(recipeId);
-        List<RecipeElement> elements = recipeElementDAO.getById(recipeId);
-        float sum = 0;
-        List<Float> prices = new ArrayList();
-        for (int i = 0; i < ingredients.size(); i++){
-            prices.add(ingredients.get(i).getPrice() * elements.get(i).getWeight());
-            sum += prices.get(i);
-        }
-        return sum;
     }
 
     @GetMapping("/{proposalId}/edit")

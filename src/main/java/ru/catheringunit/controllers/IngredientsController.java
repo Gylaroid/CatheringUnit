@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import ru.catheringunit.application.PriceCalculator;
 import ru.catheringunit.entity.Ingredient;
 import ru.catheringunit.dao.IngredientDAO;
 
@@ -11,33 +12,24 @@ import ru.catheringunit.dao.IngredientDAO;
 @RequestMapping("/ingredients")
 public class IngredientsController {
     private final IngredientDAO ingredientDAO;
+    private final PriceCalculator priceCalculator;
 
     @Autowired
-    public IngredientsController(IngredientDAO ingredientDAO){
+    public IngredientsController(IngredientDAO ingredientDAO, PriceCalculator priceCalculator){
         this.ingredientDAO = ingredientDAO;
+        this.priceCalculator = priceCalculator;
     }
 
     @GetMapping
     public String index(Model model){
+        model.addAttribute("ingredient", new Ingredient());
         model.addAttribute("ingredients", ingredientDAO.getAll());
         return "ingredients/index";
     }
 
-    @GetMapping("/{id}")
-    public String show(@PathVariable("id") long ingredientId, Model model){
-        model.addAttribute("ingredient", ingredientDAO.getById(ingredientId));
-        return "ingredients/show";
-    }
-
-    @GetMapping("/new")
-    public String newIngredient(@ModelAttribute("ingredient") Ingredient ingredient){
-
-        return "ingredients/new";
-    }
-
-    @PostMapping(path="", produces = {"application/x-www-form-urlencoded; charset=UTF-8"})
+    @PostMapping()
     public String createIngredient(@ModelAttribute("ingredient") Ingredient ingredient){
-//        System.out.println(ingredien.getName());
+        ingredient.setPrice(ingredient.getPrice());
         ingredientDAO.add(ingredient);
         return "redirect:/ingredients";
     }
@@ -50,8 +42,9 @@ public class IngredientsController {
 
     @PatchMapping("/{id}")
     public String update(@ModelAttribute("ingredient") Ingredient ingredient){
+        ingredient.setPrice(ingredient.getPrice());
         ingredientDAO.update(ingredient);
-        return "redirect: /ingredients/{id}";
+        return "redirect: /ingredients/" + ingredient.getId() + "/edit";
     }
 
     @DeleteMapping("/{id}")

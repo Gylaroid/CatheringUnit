@@ -1,7 +1,9 @@
 package ru.catheringunit.dao;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import ru.catheringunit.application.DBConnector;
+import ru.catheringunit.application.DBInitializer;
 import ru.catheringunit.entity.Category;
 
 import java.sql.*;
@@ -10,8 +12,11 @@ import java.util.List;
 
 @Component
 public class CategoryDAO {
+    @Autowired
+    public DBConnector dbConnector;
+
     public boolean add(Category entity) {
-        Connection connection = new DBConnector().getConnection();
+        Connection connection = dbConnector.getConnection();
         boolean status = false;
         ResultSet resultSet;
 
@@ -36,7 +41,7 @@ public class CategoryDAO {
     }
 
     public List<Category> getAll() {
-        Connection connection = new DBConnector().getConnection();
+        Connection connection = dbConnector.getConnection();
         List<Category> result = new ArrayList<>();
         ResultSet resultSet;
         Statement statement;
@@ -63,7 +68,7 @@ public class CategoryDAO {
     }
 
     public Category getById(long id) {
-        Connection connection = new DBConnector().getConnection();
+        Connection connection = dbConnector.getConnection();
         Category result = null;
         ResultSet resultSet;
         PreparedStatement preparedStatement;
@@ -89,7 +94,7 @@ public class CategoryDAO {
     }
 
     public boolean update(Category entity) {
-        Connection connection = new DBConnector().getConnection();
+        Connection connection = dbConnector.getConnection();
         boolean status = false;
         PreparedStatement preparedStatement;
         String sql = "UPDATE public.categories SET name = ? WHERE id = ?";
@@ -108,7 +113,7 @@ public class CategoryDAO {
     }
 
     public boolean remove(Category entity) {
-        Connection connection = new DBConnector().getConnection();
+        Connection connection = dbConnector.getConnection();
         boolean status = false;
         PreparedStatement preparedStatement;
         String sql = "DELETE FROM public.categories WHERE id = ?";

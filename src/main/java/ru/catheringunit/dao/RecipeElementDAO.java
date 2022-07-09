@@ -1,5 +1,6 @@
 package ru.catheringunit.dao;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import ru.catheringunit.application.DBConnector;
 import ru.catheringunit.entity.Ingredient;
@@ -11,8 +12,11 @@ import java.util.List;
 
 @Component
 public class RecipeElementDAO {
+    @Autowired
+    public DBConnector dbConnector;
+
     public boolean add(RecipeElement entity) {
-        Connection connection = new DBConnector().getConnection();
+        Connection connection = dbConnector.getConnection();
         boolean status = false;
         ResultSet resultSet;
         PreparedStatement preparedStatement;
@@ -37,7 +41,7 @@ public class RecipeElementDAO {
     }
 
     public List<RecipeElement> getAll() {
-        Connection connection = new DBConnector().getConnection();
+        Connection connection = dbConnector.getConnection();
         List<RecipeElement> result = new ArrayList<>();
         ResultSet resultSet;
         Statement statement;
@@ -66,7 +70,7 @@ public class RecipeElementDAO {
     }
 
     public RecipeElement getByIds(long foodOrDrinkId, long ingredientId) {
-        Connection connection = new DBConnector().getConnection();
+        Connection connection = dbConnector.getConnection();
         RecipeElement result = null;
         ResultSet resultSet;
         PreparedStatement preparedStatement;
@@ -95,7 +99,7 @@ public class RecipeElementDAO {
     }
 
     public List<RecipeElement> getById(long foodOrDrinkId){
-        Connection connection = new DBConnector().getConnection();
+        Connection connection = dbConnector.getConnection();
         List<RecipeElement> recipeElements = new ArrayList<>();
         ResultSet resultSet;
         PreparedStatement preparedStatement;
@@ -126,7 +130,7 @@ public class RecipeElementDAO {
     }
 
     public List<Ingredient> getIngredientsByRecipeId(long foodOrDrinkId){
-        Connection connection = new DBConnector().getConnection();
+        Connection connection = dbConnector.getConnection();
         List<Ingredient> ingredients = new ArrayList<>();
         ResultSet resultSet;
         PreparedStatement preparedStatement;
@@ -156,7 +160,7 @@ public class RecipeElementDAO {
     }
 
     public boolean update(RecipeElement entity) {
-        Connection connection = new DBConnector().getConnection();
+        Connection connection = dbConnector.getConnection();
         boolean status = false;
         PreparedStatement preparedStatement;
         String sql = "UPDATE public.recipes SET \"food&drinks_id\" = ?, ingredients_id = ?, weight = ? WHERE id = ?";
@@ -177,7 +181,7 @@ public class RecipeElementDAO {
     }
 
     public boolean remove(RecipeElement entity) {
-        Connection connection = new DBConnector().getConnection();
+        Connection connection = dbConnector.getConnection();
         boolean status = false;
         PreparedStatement preparedStatement;
         String sql = "DELETE FROM public.recipes WHERE id = ?";

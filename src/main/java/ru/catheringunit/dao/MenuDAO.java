@@ -1,5 +1,6 @@
 package ru.catheringunit.dao;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import ru.catheringunit.application.DBConnector;
 import ru.catheringunit.entity.Menu;
@@ -10,9 +11,11 @@ import java.util.List;
 
 @Component
 public class MenuDAO {
+    @Autowired
+    public DBConnector dbConnector;
 
     public boolean add(Menu entity) {
-        Connection connection = new DBConnector().getConnection();
+        Connection connection = dbConnector.getConnection();
         boolean status = false;
         ResultSet resultSet;
         PreparedStatement preparedStatement;
@@ -36,7 +39,7 @@ public class MenuDAO {
     }
 
     public List<Menu> getAll() {
-        Connection connection = new DBConnector().getConnection();
+        Connection connection = dbConnector.getConnection();
         List<Menu> result = new ArrayList<>();
         ResultSet resultSet;
         Statement statement;
@@ -64,7 +67,7 @@ public class MenuDAO {
     }
 
     public Menu getById(long id) {
-        Connection connection = new DBConnector().getConnection();
+        Connection connection = dbConnector.getConnection();
         Menu result = null;
         ResultSet resultSet;
         PreparedStatement preparedStatement;
@@ -91,7 +94,7 @@ public class MenuDAO {
     }
 
     public boolean update(Menu entity) {
-        Connection connection = new DBConnector().getConnection();
+        Connection connection = dbConnector.getConnection();
         boolean status = false;
         PreparedStatement preparedStatement;
         String sql = "UPDATE public.menus SET name = ? WHERE id = ?";
@@ -110,7 +113,7 @@ public class MenuDAO {
     }
 
     public boolean remove(Menu entity) {
-        Connection connection = new DBConnector().getConnection();
+        Connection connection = dbConnector.getConnection();
         boolean status = false;
         PreparedStatement preparedStatement;
         String sql = "DELETE FROM public.menus WHERE id = ?";

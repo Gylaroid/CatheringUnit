@@ -1,5 +1,6 @@
 package ru.catheringunit.dao;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import ru.catheringunit.application.DBConnector;
 import ru.catheringunit.entity.Proposal;
@@ -10,8 +11,11 @@ import java.util.List;
 
 @Component
 public class ProposalDAO {
+    @Autowired
+    public DBConnector dbConnector;
+
     public boolean add(Proposal entity) {
-        Connection connection = new DBConnector().getConnection();
+        Connection connection = dbConnector.getConnection();
         boolean status = false;
         ResultSet resultSet;
         PreparedStatement preparedStatement;
@@ -34,7 +38,7 @@ public class ProposalDAO {
     }
 
     public List<Proposal> getAll() {
-        Connection connection = new DBConnector().getConnection();
+        Connection connection = dbConnector.getConnection();
         List<Proposal> result = new ArrayList<>();
         ResultSet resultSet;
         Statement statement;
@@ -61,7 +65,7 @@ public class ProposalDAO {
     }
 
     public Proposal getById(long id) {
-        Connection connection = new DBConnector().getConnection();
+        Connection connection = dbConnector.getConnection();
         Proposal result = null;
         ResultSet resultSet;
         PreparedStatement preparedStatement;
@@ -87,7 +91,7 @@ public class ProposalDAO {
     }
 
     public boolean update(Proposal entity) {
-        Connection connection = new DBConnector().getConnection();
+        Connection connection = dbConnector.getConnection();
         boolean status = false;
         PreparedStatement preparedStatement;
         String sql = "UPDATE public.proposals SET date = ? WHERE id = ?";
@@ -106,7 +110,7 @@ public class ProposalDAO {
     }
 
     public boolean remove(Proposal entity) {
-        Connection connection = new DBConnector().getConnection();
+        Connection connection = dbConnector.getConnection();
         boolean status = false;
         PreparedStatement preparedStatement;
         String sql = "DELETE FROM public.proposals WHERE id = ?";

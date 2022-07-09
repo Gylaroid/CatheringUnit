@@ -1,5 +1,6 @@
 package ru.catheringunit.dao;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import ru.catheringunit.application.DBConnector;
 import ru.catheringunit.entity.ProposalElement;
@@ -10,8 +11,11 @@ import java.util.List;
 
 @Component
 public class ProposalElementDAO {
+    @Autowired
+    public DBConnector dbConnector;
+
     public boolean add(ProposalElement entity) {
-        Connection connection = new DBConnector().getConnection();
+        Connection connection = dbConnector.getConnection();
         boolean status = false;
         ResultSet resultSet;
         PreparedStatement preparedStatement;
@@ -36,7 +40,7 @@ public class ProposalElementDAO {
     }
 
     public List<ProposalElement> getAll() {
-        Connection connection = new DBConnector().getConnection();
+        Connection connection = dbConnector.getConnection();
         List<ProposalElement> result = new ArrayList<>();
         ResultSet resultSet;
         Statement statement;
@@ -65,7 +69,7 @@ public class ProposalElementDAO {
     }
 
     public ProposalElement getByIds(long proposalId, long menuId, long ingredientId) {
-        Connection connection = new DBConnector().getConnection();
+        Connection connection = dbConnector.getConnection();
         ProposalElement result = null;
         ResultSet resultSet;
         PreparedStatement preparedStatement;
@@ -94,7 +98,7 @@ public class ProposalElementDAO {
     }
 
     public List<ProposalElement> getById(long proposalId) {
-        Connection connection = new DBConnector().getConnection();
+        Connection connection = dbConnector.getConnection();
         List<ProposalElement> results = new ArrayList<>();
         ResultSet resultSet;
         PreparedStatement preparedStatement;
@@ -125,7 +129,7 @@ public class ProposalElementDAO {
     }
 
     public boolean update(ProposalElement entity) {
-        Connection connection = new DBConnector().getConnection();
+        Connection connection = dbConnector.getConnection();
         boolean status = false;
         PreparedStatement preparedStatement;
         String sql = "UPDATE public.proposal_elements SET proposals_id = ?, menus_id = ?, count = ? WHERE id = ?";
@@ -146,7 +150,7 @@ public class ProposalElementDAO {
     }
 
     public boolean remove(ProposalElement entity) {
-        Connection connection = new DBConnector().getConnection();
+        Connection connection = dbConnector.getConnection();
         boolean status = false;
         PreparedStatement preparedStatement;
         String sql = "DELETE FROM public.proposal_elements WHERE id = ?";

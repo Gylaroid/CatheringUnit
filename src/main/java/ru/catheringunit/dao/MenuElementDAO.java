@@ -1,5 +1,6 @@
 package ru.catheringunit.dao;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import ru.catheringunit.application.DBConnector;
 import ru.catheringunit.entity.MenuElement;
@@ -10,9 +11,11 @@ import java.util.List;
 
 @Component
 public class MenuElementDAO {
+    @Autowired
+    public DBConnector dbConnector;
 
     public boolean add(MenuElement entity) {
-        Connection connection = new DBConnector().getConnection();
+        Connection connection = dbConnector.getConnection();
         boolean status = false;
         ResultSet resultSet;
         PreparedStatement preparedStatement;
@@ -38,7 +41,7 @@ public class MenuElementDAO {
     }
 
     public List<MenuElement> getAll() {
-        Connection connection = new DBConnector().getConnection();
+        Connection connection = dbConnector.getConnection();
         List<MenuElement> result = new ArrayList<>();
         ResultSet resultSet;
         Statement statement;
@@ -67,7 +70,7 @@ public class MenuElementDAO {
     }
 
     public MenuElement getByIds(long menuId, long foodOrDrinkId) {
-        Connection connection = new DBConnector().getConnection();
+        Connection connection = dbConnector.getConnection();
         MenuElement result = null;
         ResultSet resultSet;
         PreparedStatement preparedStatement;
@@ -96,7 +99,7 @@ public class MenuElementDAO {
     }
 
     public List<MenuElement> getById(long menuId){
-        Connection connection = new DBConnector().getConnection();
+        Connection connection = dbConnector.getConnection();
         List<MenuElement> results = new ArrayList<>();
         ResultSet resultSet;
         PreparedStatement preparedStatement;
@@ -126,7 +129,7 @@ public class MenuElementDAO {
     }
 
     public boolean update(MenuElement entity) {
-        Connection connection = new DBConnector().getConnection();
+        Connection connection = dbConnector.getConnection();
         boolean status = false;
         PreparedStatement preparedStatement;
         String sql = "UPDATE public.menu_elements SET \"food&drinks_id\" = ?, menus_id = ?, count = ? WHERE id = ?";
@@ -146,7 +149,7 @@ public class MenuElementDAO {
     }
 
     public boolean remove(MenuElement entity) {
-        Connection connection = new DBConnector().getConnection();
+        Connection connection = dbConnector.getConnection();
         boolean status = false;
         PreparedStatement preparedStatement;
         String sql = "DELETE FROM public.menu_elements WHERE id = ?";

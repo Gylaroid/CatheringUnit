@@ -33,12 +33,18 @@ public class PriceCalculator {
 
     }
 
+    public float round(float value){
+        final double SCALE = 100;
+        double result = Math.ceil(SCALE * value) / SCALE;
+        return (float) result;
+    }
+
     public float calculateSum(List<Float> prices){
         float sum = 0;
         for(Float price : prices){
             sum += price;
         }
-        return sum;
+        return round(sum);
     }
 
     public float calculateIngredientPrice(Ingredient ingredient){
@@ -51,7 +57,7 @@ public class PriceCalculator {
         List<Float> prices = new ArrayList();
 
         for (int i = 0; i < ingredients.size(); i++){
-            prices.add(ingredients.get(i).getPrice() * elements.get(i).getWeight());
+            prices.add(round(ingredients.get(i).getPrice() * elements.get(i).getWeight()));
         }
         return prices;
     }

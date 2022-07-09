@@ -2,54 +2,113 @@
 <html lang="ru" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Редактирование меню</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0-beta1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-0evHe/X+R7YkIZDRvuzKMRqM+OrBnVFBL6DOitfPri4tjfHxaWutUpFmBp4vmVor" crossorigin="anonymous">
 </head>
 <body>
-<form th:method="PATCH" th:object="${menuE}" th:action="@{/menus/{menuId}(menuId=${menuE.getId()})}" >
-    <label for="name">Название меню:</label>
-    <input th:type="hidden" th:field="*{id}" />
-    <input th:type="text" id="name" th:field="*{name}" />
-    <input type="submit" value="Изменить">
-</form>
-<a th:href="@{/menus}"><button>Готово</button></a>
-<table>
-    <tr><th>№</th><th>Название</th><th>Стоимость</th><th>Количество</th><th></th></tr>
-    <tr th:each="recipe, iState: ${addedRecipes}">
-        <td th:text="${iState.count}"></td>
-        <td><a target = "_blank" th:href="@{/recipes/{recipeId}(recipeId=${recipe.getId()})}" th:text="${recipe.getName()}"></a></td>
-        <td th:text="${addedPrices.get(iState.count - 1)}"></td>
-        <td th:text="${menuElements.get(iState.count - 1).getCount()}"></td>
-        <td>
-            <form th:method="DELETE" th:object="${delElement}" th:action="@{/menus/{menuId}/{recipeId}(menuId=${menuE.getId()}, recipeId=${recipe.getId()})}">
-                <input type="hidden" name="count" th:value="${menuElements.get(iState.count - 1).getCount()}">
-                <input type="hidden" name="id" th:value="${menuElements.get(iState.count - 1).getId()}">
-                <input type="hidden" name="foodOrDrinkId" th:value="${menuElements.get(iState.count - 1).getRecipeId()}">
-                <input type="hidden" name="menuId" th:value="${menuElements.get(iState.count - 1).getMenuId()}">
-                <button type="submit">X</button>
+<div class="sticky-top" style="padding-top: 20px; padding-bottom: 20px; background: white; box-shadow: 0 0 5px rgba(122,122,122,0.5);">
+    <ul class="nav nav-pills justify-content-center">
+        <li class="nav-item">
+            <a class="nav-link" th:href="@{/ingredients}" th:text="Ингредиенты">Link</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" th:href="@{/categories}" th:text="Категории" >Link</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" th:href="@{/recipes}" th:text="Рецепты">Link</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link active" aria-current="page" th:href="@{/menus}" th:text="Меню">Link</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" th:href="@{/proposals}" th:text="Заявки">Link</a>
+        </li>
+    </ul>
+</div>
+<div class="container">
+    <div class="row justify-content-center">
+        <div class="col col-lg-12">
+            <form class="row" th:method="PATCH" th:object="${menuE}" th:action="@{/menus/{menuId}(menuId=${menuE.getId()})}" >
+                <div class="col-12 col-lg-auto mt-3">
+                    <label class="col-form-label" for="name">Название меню:</label>
+                </div>
+                    <input th:type="hidden" th:field="*{id}" />
+                <div class="col-8 col-sm-auto mt-3">
+                    <input class="form-control mb-2 mr-sm-2" th:type="text" id="name" th:field="*{name}" />
+                </div>
+                <div class="col-auto mt-3 mb-2">
+                    <button class="btn btn-primary" type="submit">Изменить</button>
+                </div>
             </form>
-        </td>
-    </tr>
-    <tr><td></td><td></td><td th:text="${sum}"></td></tr>
-</table>
-<form th:object="${categoryE}" th:method="GET" th:action="@{/menus/{menuId}/edit(menuId=${menuE.getId()})}">
-    <label for="category">Категория: </label>
-    <select id="category" th:field="*{id}">
-        <option value="0">Все</option>
-        <option th:each="category: ${categories}" th:text="${category.getName()}" th:value="${category.getId()}"></option>
-    </select>
-    <input type="submit" value="Применить">
-</form>
-<table>
-    <tr><th>№</th><th>Название</th><th>Стоимость</th><th>Количество</th><th></th></tr>
-    <tr th:each="recipe, iState: ${recipes}">
-        <td th:text="${iState.count}"></td>
-        <td><a target = "_blank" th:href="@{/recipes/{recipeId}(recipeId=${recipe.getId()})}" th:text="${recipe.getName()}"></a></td>
-        <td th:text="${prices.get(iState.count - 1)}"></td>
-        <form th:method="POST" th:object="${menuElement}" th:action="@{/menus/{menuId}/{recipeId}(menuId=${menuE.getId()}, recipeId=${recipe.getId()})}">
-            <td><input size="2" min="1" type="number" th:field="*{count}"> порц.</td>
-            <td><button type="submit">+</button></td>
-        </form>
-    </tr>
-</table>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-12 col-lg-6">
+            <h2>Блюда в меню</h2>
+            <table class="table table-striped table-hover">
+                <thead>
+                    <tr class="d-sm-none"><th>Название</th><th>Цена</th><th>Кол-во</th><th></th></tr>
+                    <tr class="d-none d-sm-table-row"><th>№</th><th>Название</th><th>Стоимость</th><th>Количество</th><th></th></tr>
+                </thead>
+                <tbody>
+                    <tr scope="row" th:each="recipe, iState: ${addedRecipes}">
+                        <td class="d-none d-sm-table-cell" th:text="${iState.count}"></td>
+                        <td><a target = "_blank" th:href="@{/recipes/{recipeId}(recipeId=${recipe.getId()})}" th:text="${recipe.getName()}"></a></td>
+                        <td th:text="${addedPrices.get(iState.count - 1)}"></td>
+                        <td th:text="${menuElements.get(iState.count - 1).getCount()}"></td>
+                        <td>
+                            <form th:method="DELETE" th:object="${delElement}" th:action="@{/menus/{menuId}/{recipeId}(menuId=${menuE.getId()}, recipeId=${recipe.getId()})}">
+                                <input type="hidden" name="count" th:value="${menuElements.get(iState.count - 1).getCount()}">
+                                <input type="hidden" name="id" th:value="${menuElements.get(iState.count - 1).getId()}">
+                                <input type="hidden" name="foodOrDrinkId" th:value="${menuElements.get(iState.count - 1).getRecipeId()}">
+                                <input type="hidden" name="menuId" th:value="${menuElements.get(iState.count - 1).getMenuId()}">
+                                <button class="btn btn-primary" type="submit">x</button>
+                            </form>
+                        </td>
+                    </tr>
+                    <tr><td class="d-none d-sm-table-cell"></td><td>Итог:</td><td th:text="${sum}"></td><td></td><td></td></tr>
+                </tbody>
+            </table>
+        </div>
+        <div class="col-12 col-lg-6">
+            <form class="row" th:object="${categoryE}" th:method="GET" th:action="@{/menus/{menuId}/edit(menuId=${menuE.getId()})}">
+                <div class="col-12 col-sm-auto">
+                    <h2>Все блюда</h2>
+                </div>
+                <div class="col-auto">
+                    <select class="form-select" id="category" th:field="*{id}">
+                        <option value="0">Все</option>
+                        <option th:each="category: ${categories}" th:text="${category.getName()}" th:value="${category.getId()}"></option>
+                    </select>
+                </div>
+                <div class="col-auto">
+                    <button class="btn btn-primary" type="submit">Применить</button>
+                </div>
+            </form>
+
+            <table class="table table-striped table-hover">
+                <thead>
+                    <tr class="d-sm-none"><th>Название</th><th>Цена</th><th>Кол-во</th><th></th></tr>
+                    <tr class="d-none d-sm-table-row"><th>№</th><th>Название</th><th>Стоимость</th><th>Количество</th><th></th></tr>
+                </thead>
+                <tbody>
+                    <tr th:each="recipe, iState: ${recipes}">
+                        <td class="d-none d-sm-table-cell" th:text="${iState.count}"></td>
+                        <td><a target = "_blank" th:href="@{/recipes/{recipeId}(recipeId=${recipe.getId()})}" th:text="${recipe.getName()}"></a></td>
+                        <td th:text="${prices.get(iState.count - 1)}"></td>
+                        <form th:method="POST" th:object="${menuElement}" th:action="@{/menus/{menuId}/{recipeId}(menuId=${menuE.getId()}, recipeId=${recipe.getId()})}">
+                            <td><input class="form-control" size="2" min="1" type="number" th:field="*{count}"></td>
+                            <td><button class="btn btn-primary" type="submit">+</button></td>
+                        </form>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
 </body>
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.5/dist/umd/popper.min.js" integrity="sha384-Xe+8cL9oJa6tN/veChSP7q+mnSPaj5Bcu9mPX5F5xIGE0DVittaqT5lorf0EI7Vk" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0-beta1/dist/js/bootstrap.min.js" integrity="sha384-kjU+l4N0Yf4ZOJErLsIcvOU2qSb74wXpOhqTvwVx3OElZRweTnQ6d31fXEoRD1Jy" crossorigin="anonymous"></script>
 </html>
