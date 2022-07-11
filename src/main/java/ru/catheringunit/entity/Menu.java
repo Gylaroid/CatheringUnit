@@ -1,5 +1,7 @@
 package ru.catheringunit.entity;
 
+import org.springframework.stereotype.Component;
+
 import java.util.Objects;
 
 public class Menu {

@@ -1,19 +1,22 @@
-package ru.catheringunit.service;
+package ru.catheringunit.dao;
 
-import ru.catheringunit.application.DBWorker;
-import ru.catheringunit.dao.FoodOrDrinkDAO;
-import ru.catheringunit.entity.FoodOrDrink;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
+import ru.catheringunit.application.DBConnector;
+import ru.catheringunit.entity.Recipe;
 
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
-public class FoodOrDrinkService implements FoodOrDrinkDAO {
+@Component
+public class RecipeDAO {
+    @Autowired
+    public DBConnector dbConnector;
 
-    @Override
-    public boolean add(FoodOrDrink entity) {
+    public boolean add(Recipe entity) {
         boolean status = false;
-        Connection connection = new DBWorker().getConnection();
+        Connection connection = dbConnector.getConnection();
         PreparedStatement preparedStatement;
         ResultSet resultSet;
         String sql = "INSERT INTO public.\"food&drinks\" (category_id, name) VALUES (?, ?) RETURNING id;";
@@ -23,14 +26,14 @@ public class FoodOrDrinkService implements FoodOrDrinkDAO {
             preparedStatement.setLong(1, entity.getCategoryId());
             preparedStatement.setString(2, entity.getName());
             resultSet = preparedStatement.executeQuery();
-            preparedStatement.close();
-            connection.close();
+            resultSet.next();
 
             if(resultSet != null){
                 entity.setId(resultSet.getLong("id"));
                 status = true;
             }
-
+            preparedStatement.close();
+            connection.close();
         } catch (SQLException exc) {
             exc.printStackTrace();
         }
@@ -38,10 +41,9 @@ public class FoodOrDrinkService implements FoodOrDrinkDAO {
         return status;
     }
 
-    @Override
-    public List<FoodOrDrink> getAll() {
-        Connection connection = new DBWorker().getConnection();
-        List<FoodOrDrink> foodAndDrinks = new ArrayList<>();
+    public List<Recipe> getAll() {
+        Connection connection = dbConnector.getConnection();
+        List<Recipe> foodAndDrinks = new ArrayList<>();
         Statement statement;
         String sql = "SELECT * FROM public.\"food&drinks\";";
         ResultSet resultSet;
@@ -49,18 +51,17 @@ public class FoodOrDrinkService implements FoodOrDrinkDAO {
         try {
             statement = connection.createStatement();
             resultSet = statement.executeQuery(sql);
-            statement.close();
-            connection.close();
-
             if(resultSet != null) {
                 while (resultSet.next()) {
-                    FoodOrDrink entity = new FoodOrDrink();
+                    Recipe entity = new Recipe();
                     entity.setId(resultSet.getLong("id"));
                     entity.setCategoryId(resultSet.getLong("category_id"));
                     entity.setName(resultSet.getString("name"));
                     foodAndDrinks.add(entity);
                 }
             }
+            statement.close();
+            connection.close();
         } catch (SQLException exc) {
             exc.printStackTrace();
         }
@@ -68,10 +69,9 @@ public class FoodOrDrinkService implements FoodOrDrinkDAO {
         return foodAndDrinks;
     }
 
-    @Override
-    public FoodOrDrink getById(long id) {
-        Connection connection = new DBWorker().getConnection();
-        FoodOrDrink foodOrDrink = new FoodOrDrink();
+    public Recipe getById(long id) {
+        Connection connection = dbConnector.getConnection();
+        Recipe recipe = new Recipe();
         PreparedStatement preparedStatement;
         String sql = "SELECT * FROM public.\"food&drinks\" WHERE id = ?;";
         ResultSet resultSet;
@@ -80,25 +80,25 @@ public class FoodOrDrinkService implements FoodOrDrinkDAO {
             preparedStatement = connection.prepareStatement(sql);
             preparedStatement.setLong(1, id);
             resultSet = preparedStatement.executeQuery();
-            preparedStatement.close();
-            connection.close();
+            resultSet.next();
 
             if(resultSet != null){
-                foodOrDrink.setId(resultSet.getLong("id"));
-                foodOrDrink.setCategoryId(resultSet.getLong("category_id"));
-                foodOrDrink.setName(resultSet.getString("name"));
+                recipe.setId(resultSet.getLong("id"));
+                recipe.setCategoryId(resultSet.getLong("category_id"));
+                recipe.setName(resultSet.getString("name"));
             }
+            preparedStatement.close();
+            connection.close();
         } catch (SQLException exc) {
             exc.printStackTrace();
         }
 
 
-        return foodOrDrink;
+        return recipe;
     }
 
-    @Override
-    public boolean update(FoodOrDrink entity) {
-        Connection connection = new DBWorker().getConnection();
+    public boolean update(Recipe entity) {
+        Connection connection = dbConnector.getConnection();
         boolean status = false;
         PreparedStatement preparedStatement;
         String sql = "UPDATE public.\"food&drinks\" SET name = ?, category_id = ? WHERE id = ?;";
@@ -117,9 +117,8 @@ public class FoodOrDrinkService implements FoodOrDrinkDAO {
         return status;
     }
 
-    @Override
-    public boolean remove(FoodOrDrink entity) {
-        Connection connection = new DBWorker().getConnection();
+    public boolean remove(Recipe entity) {
+        Connection connection = dbConnector.getConnection();
         boolean status = false;
         PreparedStatement preparedStatement;
         String sql = "DELETE FROM public.\"food&drinks\" WHERE id = ? AND name = ? AND category_id = ?";

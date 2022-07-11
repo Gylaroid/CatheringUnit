@@ -1,5 +1,10 @@
 package ru.catheringunit.application;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.PropertySource;
+import org.springframework.core.env.Environment;
+import org.springframework.stereotype.Component;
 import ru.catheringunit.entity.FieldMeta;
 import ru.catheringunit.entity.TableMeta;
 
@@ -10,21 +15,59 @@ import java.io.InputStreamReader;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Properties;
 
-public class DBWorker {
-    private final String HOST = "";
-    private final String USER = "";
-    private final String PASSWORD = "";
+@Component
+public class DBConnector {
+
+    @Value("${database.url}")
+    private String URL;
+
+    @Value("${database.user}")
+    private String USER;
+
+    @Value("${database.password}")
+    private String PASSWORD;
 
     private Connection connection;
 
+    public DBConnector(){
+    }
 
-    public DBWorker(){    }
+    public String getURL() {
+        return URL;
+    }
 
+    public void setURL(String URL) {
+        this.URL = URL;
+    }
+
+    public void setUSER(String USER) {
+        this.USER = USER;
+    }
+
+    public String getUSER() {
+        return USER;
+    }
+
+    public String getPASSWORD() {
+        return PASSWORD;
+    }
+
+    public void setPASSWORD(String PASSWORD) {
+        this.PASSWORD = PASSWORD;
+    }
 
     public Connection getConnection() {
         try {
-            connection = DriverManager.getConnection(HOST, USER, PASSWORD);
+            Class.forName("org.postgresql.Driver");
+        } catch (ClassNotFoundException e){
+            e.printStackTrace();
+        }
+
+        try {
+            System.out.println(USER + " " + PASSWORD + " " + URL);
+            connection = DriverManager.getConnection(URL, USER, PASSWORD);
         } catch (SQLException e) {
             e.printStackTrace();
         }

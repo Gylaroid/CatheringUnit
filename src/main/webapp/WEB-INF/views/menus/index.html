@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="ru" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Меню</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0-beta1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-0evHe/X+R7YkIZDRvuzKMRqM+OrBnVFBL6DOitfPri4tjfHxaWutUpFmBp4vmVor" crossorigin="anonymous">
+</head>
+<body>
+<div class="sticky-top" style="padding-top: 20px; padding-bottom: 20px; background: white; box-shadow: 0 0 5px rgba(122,122,122,0.5);">
+    <ul class="nav nav-pills justify-content-center">
+        <li class="nav-item">
+            <a class="nav-link" th:href="@{/ingredients}" th:text="Ингредиенты">Link</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" th:href="@{/categories}" th:text="Категории" >Link</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" th:href="@{/recipes}" th:text="Рецепты">Link</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link active" aria-current="page" th:href="@{/menus}" th:text="Меню">Link</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" th:href="@{/proposals}" th:text="Заявки">Link</a>
+        </li>
+    </ul>
+</div>
+<div class="container">
+    <div  class="row justify-content-center">
+        <div class="col col-lg-8">
+            <form class="row" method="POST" th:action="@{/menus}" th:object="${menu}">
+                <div class="col-12 col-sm-auto mt-3">
+                    <label class="col-form-label" for="name">Название меню: </label>
+                </div>
+                <div class="col-auto col-sm-auto mt-3">
+                    <input type="text" id="name" class="form-control mb-2 mr-sm-2" th:field="*{name}" />
+                </div>
+                <div class="col-auto col-sm-1 mt-3">
+                    <button type="submit" class="btn btn-primary">Создать</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <div class="row justify-content-center">
+        <div class="col col-lg-8">
+            <table class="table table-striped table-hover">
+                <thead><th class="d-none d-sm-block">ID</th><th>Название</th><th></th><th></th></thead>
+                <tbody>
+                <tr scope="row" th:each="menuL: ${menus}">
+                    <td class="d-none d-sm-block"><label class="col-form-label"  th:text="${menuL.getId()}"></label></td>
+                    <td><a th:href="@{/menus/{menuId}(menuId=${menuL.getId()})}"><label class="col-form-label" th:text="${menuL.getName()}"></label></a></td>
+                    <td>
+                        <a th:href="@{/menus/{menuId}/edit(menuId=${menuL.getId()})}"><button type="button" class="btn btn-primary">✎</button></a>
+
+                    </td>
+                    <td>
+                        <form th:method="DELETE" th:action="@{/menus/{menuId}(menuId=${menuL.getId()})}">
+                            <button type="submit" class="btn btn-primary"> x </button>
+                        </form>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+</body>
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.5/dist/umd/popper.min.js" integrity="sha384-Xe+8cL9oJa6tN/veChSP7q+mnSPaj5Bcu9mPX5F5xIGE0DVittaqT5lorf0EI7Vk" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0-beta1/dist/js/bootstrap.min.js" integrity="sha384-kjU+l4N0Yf4ZOJErLsIcvOU2qSb74wXpOhqTvwVx3OElZRweTnQ6d31fXEoRD1Jy" crossorigin="anonymous"></script>
+</html>

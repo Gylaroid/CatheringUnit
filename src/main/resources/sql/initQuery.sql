@@ -23,11 +23,13 @@ CONSTRAINT uniq_menus_name UNIQUE(name));
 
 CREATE TABLE "menu_elements" (id serial primary key,
 "food&drinks_id" integer NOT NULL REFERENCES "food&drinks"(id),
-menus_id integer NOT NULL REFERENCES menus(id));
+menus_id integer NOT NULL REFERENCES menus(id),
+count integer NOT NULL DEFAULT 1);
 
 CREATE TABLE "proposals" (id serial primary key,
 date timestamp without time zone);
 
 CREATE TABLE "proposal_elements" (id SERIAL PRIMARY KEY,
 proposals_id integer NOT NULL REFERENCES proposals(id),
-menus_id integer NOT NULL REFERENCES menus(id));
+menus_id integer NOT NULL REFERENCES menus(id),
+count integer NOT NULL DEFAULT 1);
